@@ -91,3 +91,49 @@ public class SorterBigFileTemplateImplementationTesst {
     }
    
 }
+
+/**
+     * Prueba el método mergeFiles()
+     * @throws IOException
+     */
+    @Test
+    public void mergeFilesTest() throws IOException{
+    	File merge1 = new File("merge1.txt");
+    	File merge2 = new File("merge2.txt");
+    	FileWriter fw1 = new FileWriter(merge1);
+    	FileWriter fw2 = new FileWriter(merge2);
+    	SorterBigFileTemplateImpl sbfti = new SorterBigFileTemplateImpl();
+    	String linea1 = null;
+    	String linea2 = null;
+    	
+    	fw1.write("Linea 1");
+    	fw2.write("Linea 2");
+    	File resultado = sbfti.mergeFiles(merge1, merge2);
+    	
+    	FileReader fr = new FileReader(resultado);
+    	BufferedReader br = new BufferedReader(fr);
+    	linea1 = br.readLine();
+    	linea2 = br.readLine();
+    	br.close();
+    	fr.close();
+    	fw1.close();
+    	fw2.close();
+    	
+    	Assert.assertTrue(linea1.equals("Linea 1")&&linea2.equals("Linea 2"));
+    	
+    }
+    
+    /**
+     * Prueba el método getFilesToOrder()
+     */
+    
+    @Test
+    public void getFilesToOrderTest(){
+    	File fileToOrder1 = new File("fileToOrder1.txt");
+    	File fileToOrder2 = new File("fileToOrder2.txt");
+    	SorterBigFileTemplateImpl sbfti = new SorterBigFileTemplateImpl();
+    	Queue<File> archivosAOrdenar = sbfti.getFilesToOrder();
+    	
+    	Assert.assertTrue(archivosAOrdenar.contains(fileToOrder1)&&archivosAOrdenar.contains(fileToOrder2));
+    }
+}
