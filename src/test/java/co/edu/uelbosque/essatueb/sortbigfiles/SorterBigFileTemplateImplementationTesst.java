@@ -7,17 +7,11 @@ package co.edu.uelbosque.essatueb.sortbigfiles;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringBufferInputStream;
 import java.io.StringReader;
 import java.nio.file.Files;
-import java.util.LinkedList;
-import java.util.Queue;
-
 import org.testng.Assert;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
@@ -45,100 +39,55 @@ public class SorterBigFileTemplateImplementationTesst {
         this.linesToSort=linesToSort;
     }
     
-    /*@Test
-    public void shouldHasMoreLinesToReadFromBuffer() throws FileNotFoundException{
+    @Test
+    public void shouldHasMoreLinesToReadFromBuffer(){
         SorterBigFileTemplateImpl sbfti=new SorterBigFileTemplateImpl();
-        sbfti.setBufferReader(getBufferedReader(sbfti.getToSort()));
+        sbfti.setBufferReader(getBufferedReader());
         assertTrue(sbfti.hasMoreLines());
     }
-    */
-    public BufferedReader getBufferedReader(File in) throws FileNotFoundException{
-        /*StringBuffer sb=new StringBuffer(690);
+    
+    public BufferedReader getBufferedReader(){
+        StringBuffer sb=new StringBuffer(690);
         for (int i = 0; i < linesToSort.length; i++) {
             String string = linesToSort[i];
             sb.append(string+"\n");
         }
-        ByteArrayInputStream sr=new ByteArrayInputStream(sb.toString().getBytes());*/
-        FileReader fr = new FileReader(in);
-        BufferedReader br=new BufferedReader(fr);
+        ByteArrayInputStream sr=new ByteArrayInputStream(sb.toString().getBytes());
+        BufferedReader br=new BufferedReader(new InputStreamReader(sr));
         return br;
     }
     
-    /*@Test
-    public void shouldReturnFirstTwoLines() throws FileNotFoundException{
+    @Test
+    public void shouldReturnFirstTwoLines(){
         SorterBigFileTemplateImpl sbfti=new SorterBigFileTemplateImpl(null,2,null);
-        sbfti.setBufferReader(getBufferedReader(sbfti.getToSort()));
+        sbfti.setBufferReader(getBufferedReader());
         String lines[]=sbfti.getNextLines();
                      //resultado, esperado
         assertEquals(lines.length, 2);
         assertEquals(lines[0], linesToSort[0]);
         assertEquals(lines[1], linesToSort[1]);
-    }*/
+    }
     
     @Test
-    public void saveToNewFile() throws FileNotFoundException{
+    public void saveToNewFile(){
         String dir = System.getProperty("user.dir");
-        File test_txt=new File("D:\\entrada.csv");
-        File out_dir=new File("D:\\out");
-        SorterBigFileTemplateImpl sbfti=new SorterBigFileTemplateImpl(test_txt,100,out_dir);
-        sbfti.setBufferReader(getBufferedReader(sbfti.getToSort()));
+        File test_txt=new File(dir+"/lines2order.txt");
+        File out_dir=new File(dir+"/out");
+        SorterBigFileTemplateImpl sbfti=new SorterBigFileTemplateImpl(test_txt,2,out_dir);
+        sbfti.setBufferReader(getBufferedReader());
         sbfti.saveToNewFile(sbfti.getNextLines(), 0);      
     }
     
     @Test
     public void particionarArchivos() throws IOException{
         String dir = System.getProperty("user.dir");
-        File test_txt=new File("D:\\entrada.csv");
-        File out_files=new File("D:\\out1");
-        SorterBigFileTemplateImpl sbfti=new SorterBigFileTemplateImpl(test_txt,4,out_files);
-        sbfti.setBufferReader(getBufferedReader(sbfti.getToSort()));
+        File test_txt=new File(dir+"/entrada.txt");
+        File out_files=new File(dir+"/out");
+        SorterBigFileTemplateImpl sbfti=new SorterBigFileTemplateImpl(test_txt,2,out_files);
+        sbfti.setBufferReader(getBufferedReader());
         sbfti.breakFileInChunksAndSortIt(new EdadComparator());
         long totalArchivos=Files.list(out_files.toPath()).count();
-        Assert.assertEquals(totalArchivos, 100/4);
+        Assert.assertEquals(totalArchivos, 4);
     }
    
-    /**
-     * Prueba el método mergeFiles()
-     * @throws IOException
-     */
-    @Test
-    public void mergeFilesTest() throws IOException{
-    	File merge1 = new File("merge1.txt");
-    	File merge2 = new File("merge2.txt");
-    	FileWriter fw1 = new FileWriter(merge1);
-    	FileWriter fw2 = new FileWriter(merge2);
-    	SorterBigFileTemplateImpl sbfti = new SorterBigFileTemplateImpl();
-    	String linea1 = null;
-    	String linea2 = null;
-    	
-    	fw1.write("Linea 1");
-    	fw2.write("Linea 2");
-    	File resultado = sbfti.mergeFiles(merge1, merge2);
-    	
-    	FileReader fr = new FileReader(resultado);
-    	BufferedReader br = new BufferedReader(fr);
-    	linea1 = br.readLine();
-    	linea2 = br.readLine();
-    	br.close();
-    	fr.close();
-    	fw1.close();
-    	fw2.close();
-    	
-    	Assert.assertTrue(linea1.equals("Linea 1")&&linea2.equals("Linea 2"));
-    	
-    }
-    
-    /**
-     * Prueba el método getFilesToOrder()
-     */
-    
-    @Test
-    public void getFilesToOrderTest(){
-    	File fileToOrder1 = new File("fileToOrder1.txt");
-    	File fileToOrder2 = new File("fileToOrder2.txt");
-    	SorterBigFileTemplateImpl sbfti = new SorterBigFileTemplateImpl();
-    	Queue<File> archivosAOrdenar = sbfti.getFilesToOrder();
-    	
-    	Assert.assertTrue(archivosAOrdenar.contains(fileToOrder1)&&archivosAOrdenar.contains(fileToOrder2));
-    }
 }
