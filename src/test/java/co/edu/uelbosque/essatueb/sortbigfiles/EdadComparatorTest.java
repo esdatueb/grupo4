@@ -48,5 +48,4 @@ public class EdadComparatorTest {
         int resultado=ec.compare(p1,p2);
         assertTrue(resultado==0);
     }
-   
 }
